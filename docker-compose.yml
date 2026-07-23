@@ -1,0 +1,14 @@
+services:
+  msvr-sap-api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: msvr-sap-api:latest
+    container_name: msvr-sap-api
+    ports:
+      - "7101:7101"
+    environment:
+      API_KEY: sk_e8974940c547c4f8cd16e207e7dc609e6dc3cb9f3c22ada1
+    volumes:
+      - ./app/data:/app/app/data
+    restart: unless-stopped
