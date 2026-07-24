@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Depends, HTTPException, Query
 
 from ..security import require_api_key
-from ..store import read_json
+from ..store import count_rows, find_rows
 
 router = APIRouter(prefix="/po", tags=["po"], dependencies=[Depends(require_api_key)])
 
@@ -12,12 +12,11 @@ def get_po(
     skip: int = Query(0, ge=0),
     limit: int = Query(500, ge=1, le=1000),
 ):
-    rows = read_json("po.json")
-    filtered = [r for r in rows if r["pur_doc"] == pur_doc] if pur_doc else rows
+    query = {"pur_doc": pur_doc} if pur_doc else {}
 
     # Same rule as /grn: a given filter that matches nothing is a 404, an
     # unfiltered empty page (bulk pull) is just the end of the list.
-    if pur_doc and not filtered:
+    if pur_doc and count_rows("po", query) == 0:
         raise HTTPException(status_code=404, detail="No PO line items found.")
 
-    return filtered[skip: skip + limit]
+    return find_rows("po", query, skip=skip, limit=limit)

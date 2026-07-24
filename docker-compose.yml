@@ -9,6 +9,8 @@ services:
       - "7101:7101"
     environment:
       API_KEY: sk_e8974940c547c4f8cd16e207e7dc609e6dc3cb9f3c22ada1
+      MONGO_URI: ${MONGO_URI}
+      MONGO_DB_NAME: ${MONGO_DB_NAME:-sap_api}
     volumes:
       - ./app/data:/app/app/data
     restart: unless-stopped

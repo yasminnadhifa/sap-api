@@ -4,7 +4,7 @@ from fastapi import APIRouter, Depends, status
 from pydantic import BaseModel
 
 from ..security import require_api_key
-from ..store import append_json
+from ..store import insert_rows
 
 router = APIRouter(prefix="/invoices", tags=["invoices"], dependencies=[Depends(require_api_key)])
 
@@ -27,5 +27,5 @@ class InvoiceRow(BaseModel):
 def post_invoices(payload: Union[InvoiceRow, list[InvoiceRow]]):
     rows = payload if isinstance(payload, list) else [payload]
     dumped = [row.model_dump() for row in rows]
-    append_json("invoices.json", dumped)
+    insert_rows("invoices", dumped)
     return {"received": len(dumped), "rows": dumped}

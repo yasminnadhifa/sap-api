@@ -1,23 +1,24 @@
 # SAP API (mock)
 
-Dummy FastAPI implementation of the SAP Integration Data Contract, for local testing. No database — `GET` endpoints read from JSON files seeded from DMM's sample data, `POST` endpoints append to JSON files.
+Dummy FastAPI implementation of the SAP Integration Data Contract, for local testing. Storage is MongoDB Atlas — each collection (`grn`, `po`, `pir`, `invoices`) is auto-seeded from the bundled JSON files in `app/data/` the first time it's found empty, so a fresh Atlas cluster works out of the box.
 
-All endpoints require an `X-API-Key` header (see `API_KEY` in `.env`).
+All endpoints require an `X-API-Key` header (see `API_KEY` in `.env`). Requires `MONGO_URI` (an Atlas connection string) and optionally `MONGO_DB_NAME` (defaults to `sap_api`).
 
 ## Endpoints
 
-| Method | Path | Filter / Body | Data file |
+| Method | Path | Filter / Body | Collection |
 |--------|------|----------------|-----------|
-| GET | `/grn` | `grn_number` or `po_number` | `app/data/grn.json` |
-| GET | `/po` | `pur_doc` | `app/data/po.json` |
-| POST | `/invoices` | one row object or a list of rows | `app/data/invoices.json` |
-| POST | `/pir` | one row object or a list of rows | `app/data/pir.json` |
+| GET | `/grn` | `grn_number` or `po_number` | `grn` |
+| GET | `/po` | `pur_doc` | `po` |
+| POST | `/invoices` | one row object or a list of rows | `invoices` |
+| POST | `/pir` | one row object or a list of rows | `pir` |
 | GET | `/health` | — | — |
 
 ## Run locally
 
 ```bash
 pip install -r requirements.txt
+# set MONGO_URI (and API_KEY) in .env first
 uvicorn app.main:app --reload --port 7101
 ```
 
@@ -26,6 +27,10 @@ uvicorn app.main:app --reload --port 7101
 ```bash
 docker compose up --build
 ```
+
+## Deploy to Vercel
+
+Set `MONGO_URI` (and `MONGO_DB_NAME` if not using the `sap_api` default) as environment variables in the Vercel project settings, alongside the existing `API_KEY`. No other change is needed — the Mongo client is created lazily and reused across warm invocations.
 
 ## Example
 
