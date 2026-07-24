@@ -418,5 +418,15 @@
     "order_unit": "KG",
     "deliv_date": "09.06.2026",
     "currency": "USD"
+  },
+  {
+    "pur_doc": "2037402",
+    "material": "98A060003",
+    "short_text": "Tinuvin 292",
+    "po_quantity": 200.0,
+    "net_price": 8.5,
+    "order_unit": "KG",
+    "deliv_date": "12.06.2026",
+    "currency": "SGD"
   }
 ]

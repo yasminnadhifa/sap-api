@@ -154,5 +154,18 @@
     "qty_une": 900.0,
     "supplier_name": "GOLDEN PACK INDUSTRIES SDN BHD",
     "supplier_code": "10688"
+  },
+  {
+    "grn_number": "50000036650",
+    "do_number": "6216131466",
+    "po_number": "2037402",
+    "material_code": "98A060003",
+    "material_desc": "Tinuvin 292",
+    "manufacture_date": "12.06.2026",
+    "qty": 200.0,
+    "unit": "KG",
+    "qty_une": 200.0,
+    "supplier_name": "BASF SOUTH EAST ASIA PTE LTD",
+    "supplier_code": "10812"
   }
 ]
