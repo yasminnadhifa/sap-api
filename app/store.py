@@ -19,5 +19,9 @@ def read_json(filename: str) -> list[dict]:
 # PIR and invoices are POST-only (data pushed in over time), so they're the only
 # collections that actually need persistent storage - MongoDB Atlas.
 def insert_rows(collection_name: str, rows: list[dict]) -> None:
-    if rows:
-        get_db()[collection_name].insert_many(rows)
+    if not rows:
+        return
+    # insert_many mutates each dict in place, adding "_id" (a bson ObjectId) - copy first so
+    # that never leaks into the caller's rows (which routers echo back in the response body;
+    # ObjectId isn't JSON-serializable and would crash the response).
+    get_db()[collection_name].insert_many([dict(r) for r in rows])
