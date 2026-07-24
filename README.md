@@ -1,17 +1,19 @@
 # SAP API (mock)
 
-Dummy FastAPI implementation of the SAP Integration Data Contract, for local testing. Storage is MongoDB Atlas — each collection (`grn`, `po`, `pir`, `invoices`) is auto-seeded from the bundled JSON files in `app/data/` the first time it's found empty, so a fresh Atlas cluster works out of the box.
+Dummy FastAPI implementation of the SAP Integration Data Contract, for local testing. Two storage models, split by whether an endpoint is read-only reference data or accumulates pushed rows:
+- `GET /grn` and `GET /po` — static reference data, read straight from the bundled JSON files in `app/data/`. No database involved.
+- `POST /invoices` and `POST /pir` — rows pushed in over time, stored in MongoDB Atlas so they actually persist across serverless invocations (unlike the old JSON-append-to-`/tmp` approach, which didn't survive a cold start on Vercel).
 
-All endpoints require an `X-API-Key` header (see `API_KEY` in `.env`). Requires `MONGO_URI` (an Atlas connection string) and optionally `MONGO_DB_NAME` (defaults to `sap_api`).
+All endpoints require an `X-API-Key` header (see `API_KEY` in `.env`). `/invoices` and `/pir` additionally require `MONGO_URI` (an Atlas connection string) and optionally `MONGO_DB_NAME` (defaults to `sap_api`).
 
 ## Endpoints
 
-| Method | Path | Filter / Body | Collection |
+| Method | Path | Filter / Body | Storage |
 |--------|------|----------------|-----------|
-| GET | `/grn` | `grn_number` or `po_number` | `grn` |
-| GET | `/po` | `pur_doc` | `po` |
-| POST | `/invoices` | one row object or a list of rows | `invoices` |
-| POST | `/pir` | one row object or a list of rows | `pir` |
+| GET | `/grn` | `grn_number` or `po_number` | `app/data/grn.json` |
+| GET | `/po` | `pur_doc` | `app/data/po.json` |
+| POST | `/invoices` | one row object or a list of rows | MongoDB `invoices` collection |
+| POST | `/pir` | one row object or a list of rows | MongoDB `pir` collection |
 | GET | `/health` | — | — |
 
 ## Run locally
