@@ -10,11 +10,9 @@ router = APIRouter(prefix="/pir", tags=["pir"], dependencies=[Depends(require_ap
 
 
 class PirRow(BaseModel):
-    sap_item_code: str
-    sap_item_description: str
-    sap_supplier_code: str
-    supplier_item_code: str
-    supplier_description: str
+    supplierMaterial: str
+    Material: str
+    Supplier: str
 
 
 @router.post("", status_code=status.HTTP_201_CREATED)
